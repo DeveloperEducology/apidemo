@@ -1,22 +1,35 @@
-const mongodb = require("mongodb");
-const mongoose = require("mongoose");
 const express = require("express");
 const cors = require("cors");
-// require("./db/config");
+const app = express();
+const mongoose = require("mongoose");
+const port = process.env.PORT || 5000;
 
 const Cless = require("./db/Cless");
 const Chapter = require("./db/Chapter");
 const Element = require("./db/Element");
 const { ObjectId } = require("mongodb");
 
-const app = express();
+const URL = `mongodb+srv://vijaymarka:admin123@cluster0.ivjiolu.mongodb.net/EducologyWeb?retryWrites=true&w=majority`;
+/* 
+    Incase you are using mongodb atlas database uncomment below line
+    and replace "mongoAtlasUri" with your mongodb atlas uri.
+*/
+mongoose
+  .connect(URL, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => {
+    console.log("Successfully connected to MongoDB.");
+  })
+  .catch((err) => {
+    console.error("Connection error", err);
+    process.exit();
+  });
+
 app.use(express.json());
 app.use(cors());
 
-
-app.get('/', (req, res) => {
-  res.send("Hello world")
-})
+app.get("/", (req, res) => {
+  res.send("Hello world");
+});
 
 // Login and Register
 
@@ -33,7 +46,6 @@ app.post("/add-class", async (req, res) => {
     }
   });
 });
-
 
 app.get("/all-cless", async (req, res) => {
   try {
@@ -70,7 +82,6 @@ app.post("/add-chapter", async (req, res) => {
   });
 });
 
-
 app.get("/all-chapters", async (req, res) => {
   try {
     let chapters = await Chapter.find();
@@ -84,8 +95,6 @@ app.get("/all-chapters", async (req, res) => {
     console.log(err);
   }
 });
-
-
 
 app.post("/add-element", async (req, res) => {
   const element = new Element();
@@ -128,16 +137,6 @@ app.get("/elements", async (req, res) => {
   }
 });
 
-// app.listen(5000);
-mongoose
-  .connect(
-    `mongodb+srv://vijaymarka:admin123@cluster0.ivjiolu.mongodb.net/EducologyWeb?retryWrites=true&w=majority`,
-    { useUnifiedTopology: true, useNewUrlParser: true }
-  )
-  .then(() => {
-    app.listen(5000);
-  })
-  .catch((err) => {
-    console.log(err);
-  });
-
+app.listen(port, () => {
+  console.log(`App listening at http://localhost:${port}`);
+});
