@@ -11,7 +11,7 @@ const elementSchema = new mongoose.Schema({
   type: {
     type: String,
   },
-  chapterIds: Array,
+  unitIds: Array,
   type: {
     type: String,
   },
