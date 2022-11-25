@@ -6,7 +6,11 @@ const port = process.env.PORT || 5000;
 
 const Cless = require("./db/Cless");
 const Chapter = require("./db/Chapter");
+const Unit = require("./db/Unit")
 const Element = require("./db/Element");
+
+const Chapters = require("./db/Chapters")
+
 const { ObjectId } = require("mongodb");
 
 const URL = `mongodb+srv://vijaymarka:admin123@cluster0.ivjiolu.mongodb.net/EducologyWeb?retryWrites=true&w=majority`;
@@ -61,16 +65,16 @@ app.get("/all-cless", async (req, res) => {
 });
 
 app.post("/add-chapter", async (req, res) => {
-  const chapter = new Chapter();
+  const chapter = new Chapters();
 
   const cats = req.body.cats;
-  const categoryIds = [];
-  for (var i = 0; i < categoryIds.length; i++) {
-    categoryIds.push(cats[i]);
+  const classIds = [];
+  for (var i = 0; i < classIds.length; i++) {
+    classIds.push(cats[i]);
   }
 
   chapter.title = req.body.title;
-  chapter.categoryIds = req.body.categoryIds;
+  chapter.classIds = req.body.classIds;
   await chapter.save((err, chapter) => {
     if (err) {
       res.status(500).send({ message: err });
@@ -84,7 +88,7 @@ app.post("/add-chapter", async (req, res) => {
 
 app.get("/all-chapters", async (req, res) => {
   try {
-    let chapters = await Chapter.find();
+    let chapters = await Chapters.find();
     // res.send(products);
     if (chapters.length > 0) {
       res.send(chapters);
@@ -96,12 +100,53 @@ app.get("/all-chapters", async (req, res) => {
   }
 });
 
+
+app.post("/add-unit", async (req, res) => {
+  const unit = new Unit();
+
+  const cats = req.body.cats;
+  const classIds = [];
+  for (var i = 0; i < classIds.length; i++) {
+    classIds.push(cats[i]);
+  }
+
+  unit.title = req.body.title;
+  unit.classIds = req.body.classIds;
+  unit.unitIds = req.body.unitIds;
+  await unit.save((err, unit) => {
+    if (err) {
+      res.status(500).send({ message: err });
+      return;
+    } else {
+      console.log(unit);
+      res.send(unit);
+    }
+  });
+});
+
+
+app.get("/all-units", async (req, res) => {
+  try {
+    let units = await Unit.find();
+    // res.send(products);
+    if (units.length > 0) {
+      res.send(units);
+    } else {
+      res.send({ result: "No units found" });
+    }
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+
+
 app.post("/add-element", async (req, res) => {
   const element = new Element();
-  const chpts = req.body.chpts;
-  const chapterIds = [];
-  for (var i = 0; i < chapterIds.length; i++) {
-    chapterIds.push(cats[i]);
+  const units = req.body.units;
+  const unitIds = [];
+  for (var i = 0; i < unitIds.length; i++) {
+    unitIds.push(units[i]);
   }
   const opts = req.body.opts;
   const options = [];
@@ -111,7 +156,7 @@ app.post("/add-element", async (req, res) => {
   element.question = req.body.question;
   element.options = req.body.options;
   element.correct_answer = req.body.correct_answer;
-  element.chapterIds = req.body.chapterIds;
+  element.unitIds = req.body.unitIds;
   await element.save((err, element) => {
     if (err) {
       res.status(500).send({ message: err });
