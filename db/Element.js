@@ -1,7 +1,15 @@
 const mongoose = require("mongoose");
 
 const elementSchema = new mongoose.Schema({
-  question: { type: String },
+  unitIds: Array,
+  type: {
+    type: String,
+  },
+  title: {
+    type: String
+  },
+  question: Array,
+  type:{ type: String },
   
   options: Array,
   type: {
@@ -11,9 +19,18 @@ const elementSchema = new mongoose.Schema({
   type: {
     type: String,
   },
-  unitIds: Array,
-  type: {
+  blank_answer: {
     type: String,
+  },
+  explanation: Array,
+  type: {
+    type: String
+  },
+  difficuly: {
+    type: String
+  },
+  question_type: {
+    type: String
   },
   date: { type: Date, default: Date.now },
 
