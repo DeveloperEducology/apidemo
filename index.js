@@ -4,7 +4,7 @@ const app = express();
 const mongoose = require("mongoose");
 const port = process.env.PORT || 5000;
 
-
+const users = require("./db/User");
 const Cless = require("./db/Cless");
 const Chapter = require("./db/Chapter");
 const Unit = require("./db/Unit")
@@ -38,6 +38,39 @@ app.use(cors());
 app.get("/", (req, res) => {
   res.send("Hello world");
 });
+
+// register user
+app.post("/register", async (req, res) => {
+  try {
+    let user = new users(req.body);
+    let result = await user.save();
+    result = result.toObject();
+    delete result.password;
+    res.send(result);
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+app.post("/login", async (req, res) => {
+  let user = await users.findOne(req.body).select("-password");
+  console.log(req.body);
+  if (req.body.password && req.body.email) {
+    if (user) {
+      res.send(user);
+    } else {
+      res.send({ result: "No users found" });
+    }
+  }
+});
+
+
+
+
+
+
+
+
 
 // Add class
 app.post("/add-class", async (req, res) => {
